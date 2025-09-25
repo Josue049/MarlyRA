@@ -1,128 +1,29 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pulsera AR con Flask</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #111;
-    }
-    #container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-    }
-    video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1); /* espejo si lo necesitas */
-      z-index: 0;
-    }
-    canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <div id="container">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="overlay"></canvas>
-  </div>
-
-  <script type="module">
-    import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
-    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js";
-    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js";
-
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("overlay");
-
-    // === Configuración Three.js ===
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 2;
-
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
-    scene.add(light);
-
-    let bracelet = null;
-    const loader = new GLTFLoader();
-    loader.load("../static/bracelet.glb", (gltf) => {
-      bracelet = gltf.scene;
-      bracelet.scale.set(0.05, 0.05, 0.05); // ajustar tamaño
-      scene.add(bracelet);
-    });
-
-    // === Iniciar cámara ===
-    async function initCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
-      });
-      video.srcObject = stream;
-      return new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-          video.play();
-          resolve();
-        };
-      });
-    }
-
-    async function main() {
-      await initCamera();
-
-      const vision = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
-      );
-
-      const handLandmarker = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath:
-            "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-        },
-        runningMode: "VIDEO",
-        numHands: 1,
-      });
-
-      function animate() {
-        requestAnimationFrame(animate);
-
-        const results = handLandmarker.detectForVideo(video, performance.now());
-
-        if (results.landmarks && results.landmarks.length > 0 && bracelet) {
-          const hand = results.landmarks[0];
-          const wrist = hand[0];
-          const indexBase = hand[5];
-          const pinkyBase = hand[17];
-
-          // posición
-          const x = (wrist.x - 0.5) * 2;
-          const y = (0.5 - wrist.y) * 2;
-          bracelet.position.set(x, y, 0);
-
-          // orientación
-          const dx = pinkyBase.x - indexBase.x;
-          const dy = pinkyBase.y - indexBase.y;
-          bracelet.rotation.z = Math.atan2(dy, dx);
-        }
-
-        renderer.render(scene, camera);
-      }
-
-      animate();
-    }
-
-    main();
-  </script>
+    <a-scene arjs>
+        <a-marker preset="hiro">
+            <a-entity position="0 0 0" scale="0.1 0.1 0.1">
+              <a-sphere radius="5" color="blue"></a-sphere>
+            </a-sphere>
+        </a-marker>
+        <a-entity camera position="0 0 0"></a-entity>
+    </a-scene>
 </body>
 </html>
+
+<!--<a-entity
+    position="0 0 0"
+    scale="1"
+    gltf-model="https://raw.githubusercontent.com/pedrovelasquez9/ARJS-example/main/tie.glb"
+></a-entity>-->
+
+<!--raw.githubusercontent.com/username/repo-name/branch-name/path-->
