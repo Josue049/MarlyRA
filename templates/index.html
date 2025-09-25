@@ -4,28 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR 3D Bracelet</title>
+    <title>AR 3D Model</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>
-        body { margin: 0; overflow: hidden; }
-    </style>
 </head>
-<body>
+<body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs>
         <!-- Marcador Hiro -->
         <a-marker preset="hiro">
             <!-- Modelo 3D -->
             <a-entity 
-                gltf-model="/model"        <!-- Este endpoint debe servir tu bracelet.glb desde Flask -->
-                scale="0.2 0.2 0.2"        <!-- Ajusta la escala según tu modelo -->
-                position="0 0 -0.5"        <!-- Lo movemos ligeramente hacia atrás -->
+                gltf-model="../static/bracelet.glb" 
+                scale="0.5 0.5 0.5" 
+                position="0 0 0"
                 rotation="0 0 0">
             </a-entity>
         </a-marker>
 
-        <!-- Cámara AR.js con FOV amplio -->
-        <a-entity camera="fov: 80; near: 0.1; far: 1000"></a-entity>
+        <!-- Cámara -->
+        <a-entity camera></a-entity>
     </a-scene>
 </body>
 </html>
+
+porque sigue sacando circulo azul
