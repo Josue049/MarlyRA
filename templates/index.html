@@ -58,7 +58,7 @@
 
     let bracelet = null;
     const loader = new GLTFLoader();
-    loader.load("/static/bracelet.glb", (gltf) => {
+    loader.load("../static/bracelet.glb", (gltf) => {
       bracelet = gltf.scene;
       bracelet.scale.set(0.05, 0.05, 0.05); // ajustar tamaño
       scene.add(bracelet);
